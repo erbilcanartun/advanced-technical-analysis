@@ -4,6 +4,7 @@ from bokeh.plotting import figure, show, output_file
 from bokeh.io import output_notebook, reset_output
 
 import talib
+import numpy
 
 def which_indicator(indicator_name:str):
 
