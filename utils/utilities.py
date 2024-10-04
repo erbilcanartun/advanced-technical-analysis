@@ -293,3 +293,5 @@ def mfs_height(data, length = 2 ** 7, q_range = (-40, 40)):
 
         print("t = %d; Multifractal spectrum height = %f" % (t, delta_falpha), end='')
         print("\t\t\t", end='\r')
+
+
