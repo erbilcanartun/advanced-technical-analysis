@@ -1,24 +1,57 @@
 # Advanced Technical Indicators with Scientific Extensions
 
-This repository features a collection of advanced technical indicators that combine conventional market analysis tools (e.g., SMA, EMA, RSI, etc.) with innovative, scientifically developed metrics. These metrics include entropy, mutual information, Lyapunov exponent, Lempel-Ziv complexity, etc., among others, offering unique insights into market dynamics. The indicators are plotted on interactive Bokeh candle charts, providing a highly customizable and visual trading experience.
+This repository provides a collection of conventional and experimental technical indicators, combining widely-used market tools with advanced scientific calculations. These indicators might offer a fresh perspective on market dynamics, incorporating concepts from complexity science, chaos theory, fractal analysis, and recurrence quantification analysis. The repository includes both static plots (Matplotlib) and interactive visualizations (Bokeh) to allow for in-depth exploration and analysis.
 
 ## Features
 
-- **Conventional Indicators:** Includes commonly used indicators such as moving averages (SMA, EMA), RSI, Stoch RSI, MACD, Bollinger Bands, and more.
-- **Scientific Indicators:** Unique metrics developed using scientific methods such as:
-    - Entropy: Measures the degree of uncertainty in price movement.
-    - Mutual Information: Quantifies the dependency between asset prices.
-    - Lyapunov Exponent: Assesses the sensitivity of price systems to initial conditions.
-    - Lempel-Ziv Complexity: Quantifies complexity and patterns within price data.
-    - Interactive Visualizations: All indicators are integrated into interactive Bokeh candle charts for a seamless user experience, allowing you to zoom, pan, and explore market data dynamically.
+### Conventional Indicators
+
+This collection includes widely-used technical indicators to analyze market trends:
+
+- Simple Moving Average (SMA): A basic tool that smooths price data to identify trends.
+- Exponential Moving Average (EMA): A variation of SMA with a greater emphasis on recent data points.
+- Bollinger Bands: Plots standard deviations above and below a moving average to gauge volatility.
+- Relative Strength Index (RSI): Measures the speed and change of price movements to identify overbought or oversold conditions.
+
+### Scientific Indicators
+
+In addition to conventional tools, this repository includes advanced metrics that apply scientific principles:
+
+- Entropy: Quantifies uncertainty or disorder in price movements, offering insight into market unpredictability.
+- Mutual Information: Measures the dependency between time-series data points to reveal hidden relationships within the price series.
+- Multifractal Analysis: Identifies scaling behaviors in time-series data, uncovering patterns that emerge across different time horizons.
+- Recurrence Quantification Analysis (RQA): Detects the recurrence of states in a system, helping to uncover hidden patterns or chaotic behavior in the market.
+- Complexity Measures: Includes methods such as Lempel-Ziv complexity to gauge the randomness and structural complexity within time-series data.
+- Lyapunov Exponent: A chaos indicator that quantifies the sensitivity of the system to initial conditions, helping to detect chaotic or stable behavior.
+
+## Plotting
+
+- Matplotlib (Static): Static charts offer a clear and concise way to visualize indicator values, making it easy to compare various calculations.
+- Bokeh (Interactive): Interactive plots enable dynamic exploration of data, allowing users to zoom, pan, and hover over elements to obtain deeper insights into market behavior.
+
+## Installation
+
+Clone the repository:
+
+```
+git clone https://github.com/your-username/advanced-technical-indicators.git
+````
+
+Install the required dependencies:
+
+```
+pip install -r requirements.txt
+```
 
 ## Usage
 
-Run the Jupyter notebook to explore the available indicators. Customize the inputs (timeframes, parameters) for the specific indicators you wish to analyze. Interact with the Bokeh charts for visualizing market patterns and dynamics.
+1. Open the Jupyter notebook in the repository to access and customize the indicators.
+1. Choose between static (Matplotlib) or interactive (Bokeh) charts for visualization.
+1. Customize inputs such as timeframes and indicator parameters, then explore market data through the provided tools.
 
 ## Contributing
 
-Contributions to the repository are welcome. Please open an issue or submit a pull request for any suggestions or improvements.
+Contributions are welcome! Please open an issue or submit a pull request to suggest improvements or new features.
 
 ## License
 
