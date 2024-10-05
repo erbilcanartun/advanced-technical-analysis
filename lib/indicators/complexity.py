@@ -1,6 +1,6 @@
 import numpy
 import pandas
-from lib.calculations.salib import Complexity
+from lib.salib import Complexity
 
 def complexity(data: pandas.Series, period: int):
 

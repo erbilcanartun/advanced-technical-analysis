@@ -1,7 +1,7 @@
 import numpy
 import pandas
 import matplotlib.pyplot as plt
-from lib.calculations.salib import *
+from lib.salib import *
 
 
 def mfa(ticker, data_series, period, q_range = (-40, 40), scale_range = (1, 7)):

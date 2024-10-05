@@ -1,5 +1,5 @@
 import pandas
-from lib.calculations.salib import Entropy
+from lib.salib import Entropy
 
 def shen(data: pandas.Series, period: int):
 

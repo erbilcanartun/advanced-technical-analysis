@@ -1,6 +1,6 @@
 import numpy
 import pandas
-from lib.calculations.salib import Chaos
+from lib.salib import Chaos
 
 def lyapunov(data: pandas.Series, period: int):
 

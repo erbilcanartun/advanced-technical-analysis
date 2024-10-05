@@ -1,6 +1,6 @@
 import numpy
 import pandas
-from lib.calculations.salib import Information
+from lib.salib import Information
 
 
 def mutual(data: pandas.Series, period: int, delay: int,
