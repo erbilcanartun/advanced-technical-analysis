@@ -16,13 +16,11 @@ def indicator_plot(ticker, price_data_series, price_data_frame,
                    inline=True, fig_width = 1200, fig_height = 500):
 
     if interactive:
-        interactive_plot(ticker, price_data_frame,
+        return interactive_plot(ticker, price_data_frame,
                          indicator_name, indicator_data, inline = inline,
                          fig_width = fig_width, fig_height = fig_height)
     else:
-        static_plot(ticker, price_data_series, indicator_name, indicator_data)
-
-    return None
+        return static_plot(ticker, price_data_series, indicator_name, indicator_data)
 
 def static_plot(ticker, price_data, indicator_name, indicator_data):
 
@@ -42,7 +40,7 @@ def static_plot(ticker, price_data, indicator_name, indicator_data):
     ax.set_ylabel(ticker, fontsize=fs)
 
     ax_indicator = ax.twinx()
-    ax_indicator.plot(indicator_data.indicator, color='green', lw=.8)
+    ax_indicator.plot(indicator_data[indicator_name], color='green', lw=.8)
     ax_indicator.tick_params(axis="both", direction="in", left=True,
                              labelcolor='green', width=lw, length=4)
     ax_indicator.set_ylabel(indicator_name, fontsize=fs)
@@ -111,7 +109,7 @@ def interactive_plot(ticker, price_data, indicator_name, indicator_data,
     indicatorChart = figure(title="Indicator Chart", x_axis_type="datetime", x_range=candChart.x_range,
                             tools=tools, toolbar_location="right", toolbar_sticky=False,
                             width=fig_width, height=300)
-    indicatorChart.line(x=indicator_data.index, y=indicator_data.indicator, line_color="purple",
+    indicatorChart.line(x=indicator_data.index, y=indicator_data[indicator_name], line_color="purple",
                         line_width=1.5, name=indicator_name, legend_label=indicator_name)
 
     indicatorChart.xaxis.axis_label="Date"
@@ -138,7 +136,6 @@ def which_indicator(indicator_name:str):
         return talib.RSI
     if indicator_name == 'STOCHRSI':
         return talib.STOCHRSI
-
 
 def candle_chart(ticker, data,
                  indicators_on: dict = {'SMA':None, 'EMA':None},
@@ -243,4 +240,4 @@ def candle_chart(ticker, data,
 
     show(layout)
 
-    return None
+    return layout
