@@ -12,13 +12,13 @@ from scipy.spatial.distance import pdist
 
 
 def indicator_plot(ticker, price_data_series, price_data_frame,
-                   indicator_name, indicator_data, interactive=True,
-                   inline=True, fig_width = 1200, fig_height = 500):
+                   indicator_name, indicator_data, indicator_where = 'on_price',
+                   interactive = True, inline = True, fig_width = 1200, fig_height = 500):
 
     if interactive:
         return interactive_plot(ticker, price_data_frame,
-                         indicator_name, indicator_data, inline = inline,
-                         fig_width = fig_width, fig_height = fig_height)
+                                indicator_name, indicator_data, indicator_where = 'on_price',
+                                inline = inline, fig_width = fig_width, fig_height = fig_height)
     else:
         return static_plot(ticker, price_data_series, indicator_name, indicator_data)
 
@@ -48,7 +48,8 @@ def static_plot(ticker, price_data, indicator_name, indicator_data):
     return fig
 
 def interactive_plot(ticker, price_data, indicator_name, indicator_data,
-                     inline = True, fig_width = 1200, fig_height = 500):
+                     indicator_where = 'on_price', inline = True,
+                     fig_width = 1200, fig_height = 500):
 
     fs = '12pt'
 
@@ -106,23 +107,37 @@ def interactive_plot(ticker, price_data, indicator_name, indicator_data,
     #volChart.yaxis.axis_label="Volume"
 
     #============================== INDICATOR CHART ==============================#
-    indicatorChart = figure(title="Indicator Chart", x_axis_type="datetime", x_range=candChart.x_range,
-                            tools=tools, toolbar_location="right", toolbar_sticky=False,
-                            width=fig_width, height=300)
-    indicatorChart.line(x=indicator_data.index, y=indicator_data[indicator_name], line_color="purple",
-                        line_width=1.5, name=indicator_name, legend_label=indicator_name)
+    if indicator_where == 'on_price':
 
-    indicatorChart.xaxis.axis_label="Date"
-    indicatorChart.xaxis.axis_label_text_font_size = fs
-    indicatorChart.xaxis.axis_label_text_font_style = 'normal'
-    indicatorChart.yaxis.axis_label = indicator_name
-    indicatorChart.yaxis.axis_label_text_font_size = fs
-    indicatorChart.yaxis.axis_label_text_font_style = 'normal'
+        candChart.line(x=indicator_data.index, y=indicator_data[indicator_name],
+                       line_color="purple", line_width=1.5, name=indicator_name,
+                       legend_label=indicator_name)
+        candChart.legend.location = "top_left"
+        candChart.legend.click_policy = "hide"
+        layout = column(candChart)
 
-    indicatorChart.legend.location = "top_left"
-    indicatorChart.legend.click_policy = "hide"
+    elif indicator_where == 'below_price':
 
-    layout = column(candChart, indicatorChart)
+        indicatorChart = figure(title="Indicator Chart", x_axis_type="datetime",
+                                x_range=candChart.x_range, tools=tools,
+                                toolbar_location="right", toolbar_sticky=False,
+                                width=fig_width, height=300)
+        indicatorChart.line(x=indicator_data.index, y=indicator_data[indicator_name],
+                            line_color="purple", line_width=1.5, name=indicator_name,
+                            legend_label=indicator_name)
+        indicatorChart.xaxis.axis_label="Date"
+        indicatorChart.xaxis.axis_label_text_font_size = fs
+        indicatorChart.xaxis.axis_label_text_font_style = 'normal'
+        indicatorChart.yaxis.axis_label = indicator_name
+        indicatorChart.yaxis.axis_label_text_font_size = fs
+        indicatorChart.yaxis.axis_label_text_font_style = 'normal'
+        indicatorChart.legend.location = "top_left"
+        indicatorChart.legend.click_policy = "hide"
+        layout = column(candChart, indicatorChart)
+
+    else:
+        raise KeyError("Choose between on_price or below_price options.")
+
     show(layout)
     return layout
 
