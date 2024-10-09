@@ -11,14 +11,12 @@ import talib
 from scipy.spatial.distance import pdist
 
 
-def indicator_plot(ticker, price_data_series, price_data_frame,
-                   indicator_name, indicator_data, indicator_where = 'on_price',
+def indicator_plot(ticker, price, indicator, data_frame, indicator_where = 'on_price',
                    interactive = True, inline = True, fig_width = 1200, fig_height = 500):
 
     if interactive:
-        return interactive_plot(ticker, price_data_frame,
-                                indicator_name, indicator_data, indicator_where = 'on_price',
-                                inline = inline, fig_width = fig_width, fig_height = fig_height)
+        return interactive_plot(ticker, price, indicator, data_frame, indicator_where,
+                                inline, fig_width, fig_height)
     else:
         return static_plot(ticker, price_data_series, indicator_name, indicator_data)
 
@@ -47,7 +45,7 @@ def static_plot(ticker, price_data, indicator_name, indicator_data):
     plt.show()
     return fig
 
-def interactive_plot(ticker, price_data, indicator_name, indicator_data,
+def interactive_plot(ticker, price, indicator, data_frame,
                      indicator_where = 'on_price', inline = True,
                      fig_width = 1200, fig_height = 500):
 
@@ -61,12 +59,12 @@ def interactive_plot(ticker, price_data, indicator_name, indicator_data,
         output_file("candle_chart.html")
 
     # Increasing and decreasing candles
-    inc = price_data.Close > price_data.Open
-    dec = price_data.Open > price_data.Close
+    inc = data_frame.Close > data_frame.Open
+    dec = data_frame.Open > data_frame.Close
 
     # Candlestick width
+    candle_body_width = (data_frame.index[1] - data_frame.index[0]).total_seconds() * 1000 / 2
     # candle_body_width = Half of the trading time in miliseconds
-    candle_body_width = (price_data.index[1] - price_data.index[0]).total_seconds() * 1000 / 2
 
     # Prepare the candlestick chart
     tools = "pan, wheel_zoom, reset"
@@ -74,16 +72,16 @@ def interactive_plot(ticker, price_data, indicator_name, indicator_data,
                        toolbar_location="right", toolbar_sticky=False,
                        width=fig_width, height=fig_height)
     # Green bars
-    candChart.segment(x0=price_data.index[inc], y0=price_data.High[inc],
-                      x1=price_data.index[inc], y1=price_data.Low[inc], color="green")
-    candChart.vbar(x=price_data.index[inc], bottom=price_data.Open[inc],
-                   top=price_data.Close[inc], width=candle_body_width,
+    candChart.segment(x0=data_frame.index[inc], y0=data_frame.High[inc],
+                      x1=data_frame.index[inc], y1=data_frame.Low[inc], color="green")
+    candChart.vbar(x=data_frame.index[inc], bottom=data_frame.Open[inc],
+                   top=data_frame.Close[inc], width=candle_body_width,
                    fill_color="green", line_color="green")
     # Red bars
-    candChart.segment(x0=price_data.index[dec], y0=price_data.High[dec],
-                      x1=price_data.index[dec], y1=price_data.Low[dec], color="red")
-    candChart.vbar(x=price_data.index[dec], bottom=price_data.Close[dec],
-                   top=price_data.Open[dec], width=candle_body_width,
+    candChart.segment(x0=data_frame.index[dec], y0=data_frame.High[dec],
+                      x1=data_frame.index[dec], y1=data_frame.Low[dec], color="red")
+    candChart.vbar(x=data_frame.index[dec], bottom=data_frame.Close[dec],
+                   top=data_frame.Open[dec], width=candle_body_width,
                    fill_color="red", line_color="red")
 
     # Set the axis labels
@@ -101,17 +99,19 @@ def interactive_plot(ticker, price_data, indicator_name, indicator_data,
 
     #=============================== VOLUME CHART ================================#
     #volChart = figure(x_axis_type="datetime", width=fig_width, height=200)
-    #volChart.vbar(dataframe.index[inc], width=width, top=dataframe.Volume[inc], fill_color="green", line_color="green", alpha=0.8)
-    #volChart.vbar(dataframe.index[dec], width=width, top=dataframe.Volume[dec], fill_color="red", line_color="red", alpha=0.8)
+    #volChart.vbar(data_frame.index[inc], width=width, top=data_frame.Volume[inc], fill_color="green", line_color="green", alpha=0.8)
+    #volChart.vbar(data_frame.index[dec], width=width, top=data_frame.Volume[dec], fill_color="red", line_color="red", alpha=0.8)
     #volChart.xaxis.axis_label="Date"
     #volChart.yaxis.axis_label="Volume"
 
     #============================== INDICATOR CHART ==============================#
+
     if indicator_where == 'on_price':
 
-        candChart.line(x=indicator_data.index, y=indicator_data[indicator_name],
-                       line_color="purple", line_width=1.5, name=indicator_name,
-                       legend_label=indicator_name)
+        for i, ind in enumerate(indicator):
+            candChart.line(x=data_frame.index, y=data_frame[ind], line_color='purple',
+                           line_width=1.5, name=ind, legend_label=ind)
+
         candChart.legend.location = "top_left"
         candChart.legend.click_policy = "hide"
         layout = column(candChart)
@@ -122,13 +122,16 @@ def interactive_plot(ticker, price_data, indicator_name, indicator_data,
                                 x_range=candChart.x_range, tools=tools,
                                 toolbar_location="right", toolbar_sticky=False,
                                 width=fig_width, height=300)
-        indicatorChart.line(x=indicator_data.index, y=indicator_data[indicator_name],
-                            line_color="purple", line_width=1.5, name=indicator_name,
-                            legend_label=indicator_name)
+
+        for i, ind in enumerate(indicator):
+
+            indicatorChart.line(x=data_frame.index, y=data_frame[ind], #line_color="purple",
+                                line_width=1.5, name=ind, legend_label=ind)
+
         indicatorChart.xaxis.axis_label="Date"
         indicatorChart.xaxis.axis_label_text_font_size = fs
         indicatorChart.xaxis.axis_label_text_font_style = 'normal'
-        indicatorChart.yaxis.axis_label = indicator_name
+        indicatorChart.yaxis.axis_label = ind
         indicatorChart.yaxis.axis_label_text_font_size = fs
         indicatorChart.yaxis.axis_label_text_font_style = 'normal'
         indicatorChart.legend.location = "top_left"
@@ -136,7 +139,7 @@ def interactive_plot(ticker, price_data, indicator_name, indicator_data,
         layout = column(candChart, indicatorChart)
 
     else:
-        raise KeyError("Choose between on_price or below_price options.")
+        raise KeyError("Choose either of on_price or below_price options for indicator_where.")
 
     show(layout)
     return layout
