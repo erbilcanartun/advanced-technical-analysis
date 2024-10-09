@@ -11,16 +11,16 @@ import talib
 from scipy.spatial.distance import pdist
 
 
-def indicator_plot(ticker, price, indicator, data_frame, indicator_where = 'on_price',
-                   interactive = True, inline = True, fig_width = 1200, fig_height = 500):
+def indicator_plot(ticker, price, indicator, data_frame, interactive = True,
+                   inline = True, fig_width = 1200, fig_height = 500):
 
     if interactive:
-        return interactive_plot(ticker, price, indicator, data_frame, indicator_where,
-                                inline, fig_width, fig_height)
+        return interactive_plot(ticker, price, indicator, data_frame, inline,
+                                fig_width, fig_height)
     else:
         return static_plot(ticker, price_data_series, indicator_name, indicator_data)
 
-def static_plot(ticker, price_data, indicator_name, indicator_data):
+def static_plot(ticker, price, indicator, data_frame):
 
     fig, ax = plt.subplots(figsize=(13, 6))
     plt.style.use('classic')
@@ -31,24 +31,22 @@ def static_plot(ticker, price_data, indicator_name, indicator_data):
     plt.rcParams['font.family'] = 'Arial'
     plt.rcParams.update({'mathtext.default':'regular'})
 
-    ax.plot(price_data, ls='-',color='blue', lw=.7)
+    ax.plot(data_frame[price], ls='-',color='blue', lw=.7)
     ax.tick_params(axis="x", direction="in", labelcolor='black', width=lw, length=4)
     ax.tick_params(axis="y", direction="in", labelcolor='blue', width=lw, length=4)
-    ax.set_xlabel("Date", fontsize=fs, )
+    ax.set_xlabel("Date", fontsize=fs)
     ax.set_ylabel(ticker, fontsize=fs)
 
     ax_indicator = ax.twinx()
-    ax_indicator.plot(indicator_data[indicator_name], color='green', lw=.8)
+    ax_indicator.plot(data_frame[indicator], color='green', lw=lw)
     ax_indicator.tick_params(axis="both", direction="in", left=True,
                              labelcolor='green', width=lw, length=4)
-    ax_indicator.set_ylabel(indicator_name, fontsize=fs)
+    ax_indicator.set_ylabel(indicator, fontsize=fs)
     plt.show()
     return fig
 
-def interactive_plot(ticker, price, indicator, data_frame,
-                     indicator_where = 'on_price', inline = True,
+def interactive_plot(ticker, price, indicator, data_frame, inline = True,
                      fig_width = 1200, fig_height = 500):
-
     fs = '12pt'
     lw = 1.5
 
@@ -109,63 +107,50 @@ def interactive_plot(ticker, price, indicator, data_frame,
     within_price_scale = ['SMA', 'EMA', 'SAR']
     colors = ['blue', 'brown', 'purple', 'cyan']
 
-    if indicator_where == 'on_price':
+    n = len([x for x in indicator if x in within_price_scale])
 
-        for i, ind in enumerate(indicator):
+    indicatorChart = figure(title=None, x_axis_type="datetime",
+                            x_range=candChart.x_range, tools=tools,
+                            toolbar_location="right", toolbar_sticky=False,
+                            width=fig_width, height=300)
 
-            if ind in within_price_scale:
-                candChart.line(x=data_frame.index, y=data_frame[ind], line_color=colors[i],
-                               line_width=lw, name=ind, legend_label=ind)
-            else:
-                candChart.extra_y_ranges = {ind: Range1d()}
-                candChart.add_layout(LinearAxis(y_range_name=ind, axis_label=ind,
-                                                major_label_text_color=colors[i],
-                                                axis_label_text_color=colors[i]), 'right')
-                candChart.line(data_frame.index, data_frame[ind], line_color=colors[i],
-                               line_width=lw, name=ind, legend_label=ind)
+    first = True
+    for i, x in enumerate(indicator):
+
+        if x in within_price_scale:
+            candChart.line(x=data_frame.index, y=data_frame[x], line_color=colors[i],
+                           line_width=lw, name=x, legend_label=x)
+
+        else:
+            #if first == True:
+
+            #indicatorChart.line(x=data_frame.index, y=data_frame[x], line_color=colors[i],
+            #                    line_width=lw, name=x, legend_label=x)
+                #first = False
+            #else:
+            indicatorChart.extra_y_ranges = {x: Range1d()}
+            indicatorChart.add_layout(LinearAxis(y_range_name=x, axis_label=x,
+                                                 major_label_text_color=colors[i],
+                                                 axis_label_text_color=colors[i]), 'right')
+            indicatorChart.line(x=data_frame.index, y=data_frame[x], line_color=colors[i],
+                                line_width=lw, name=x, legend_label=x)
+
+            indicatorChart.xaxis.axis_label="Date"
+            indicatorChart.xaxis.axis_label_text_font_size = fs
+            indicatorChart.xaxis.axis_label_text_font_style = 'normal'
+            #indicatorChart.yaxis.axis_label = x
+            indicatorChart.yaxis.axis_label_text_font_size = fs
+            indicatorChart.yaxis.axis_label_text_font_style = 'normal'
+            indicatorChart.legend.location = "top_left"
+            indicatorChart.legend.click_policy = "hide"
 
         candChart.legend.location = "top_left"
         candChart.legend.click_policy = "hide"
-        layout = column(candChart)
 
-    elif indicator_where == 'below_price':
-
-        indicatorChart = figure(title=None, x_axis_type="datetime",
-                                x_range=candChart.x_range, tools=tools,
-                                toolbar_location="right", toolbar_sticky=False,
-                                width=fig_width, height=300)
-
-        for i, ind in enumerate(indicator):
-                indicatorChart.extra_y_ranges = {ind: Range1d()}
-                candChart.add_layout(LinearAxis(y_range_name=ind, axis_label=ind,
-                                                major_label_text_color=colors[i],
-                                                axis_label_text_color=colors[i]), 'right')
-                indicatorChart.line(x=data_frame.index, y=data_frame[ind], line_color=colors[i],
-                                    line_width=lw, name=ind, legend_label=ind)
-
-        indicatorChart.xaxis.axis_label="Date"
-        indicatorChart.xaxis.axis_label_text_font_size = fs
-        indicatorChart.xaxis.axis_label_text_font_style = 'normal'
-        indicatorChart.yaxis.axis_label = ind
-        indicatorChart.yaxis.axis_label_text_font_size = fs
-        indicatorChart.yaxis.axis_label_text_font_style = 'normal'
-        indicatorChart.legend.location = "top_left"
-        indicatorChart.legend.click_policy = "hide"
-        layout = column(candChart, indicatorChart)
-
-    else:
-        raise KeyError("Choose either of on_price or below_price options for indicator_where.")
+        if indicatorChart:
+            layout = column(candChart, indicatorChart)
+        else:
+            layout = column(candChart)
 
     show(layout)
     return layout
-
-def which_indicator(indicator_name:str):
-
-    if indicator_name == 'SMA':
-        return talib.SMA
-    if indicator_name == 'EMA':
-        return talib.EMA
-    if indicator_name == 'RSI':
-        return talib.RSI
-    if indicator_name == 'STOCHRSI':
-        return talib.STOCHRSI
