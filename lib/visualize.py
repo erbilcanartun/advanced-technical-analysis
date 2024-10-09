@@ -50,6 +50,7 @@ def interactive_plot(ticker, price, indicator, data_frame,
                      fig_width = 1200, fig_height = 500):
 
     fs = '12pt'
+    lw = 1.5
 
     if inline:
         reset_output()
@@ -68,7 +69,7 @@ def interactive_plot(ticker, price, indicator, data_frame,
 
     # Prepare the candlestick chart
     tools = "pan, wheel_zoom, reset"
-    candChart = figure(title="Price Chart", x_axis_type="datetime", tools=tools,
+    candChart = figure(title="Candlestick Chart", x_axis_type="datetime", tools=tools,
                        toolbar_location="right", toolbar_sticky=False,
                        width=fig_width, height=fig_height)
     # Green bars
@@ -105,12 +106,23 @@ def interactive_plot(ticker, price, indicator, data_frame,
     #volChart.yaxis.axis_label="Volume"
 
     #============================== INDICATOR CHART ==============================#
+    within_price_scale = ['SMA', 'EMA', 'SAR']
+    colors = ['blue', 'brown', 'purple', 'cyan']
 
     if indicator_where == 'on_price':
 
         for i, ind in enumerate(indicator):
-            candChart.line(x=data_frame.index, y=data_frame[ind], line_color='purple',
-                           line_width=1.5, name=ind, legend_label=ind)
+
+            if ind in within_price_scale:
+                candChart.line(x=data_frame.index, y=data_frame[ind], line_color=colors[i],
+                               line_width=lw, name=ind, legend_label=ind)
+            else:
+                candChart.extra_y_ranges = {ind: Range1d()}
+                candChart.add_layout(LinearAxis(y_range_name=ind, axis_label=ind,
+                                                major_label_text_color=colors[i],
+                                                axis_label_text_color=colors[i]), 'right')
+                candChart.line(data_frame.index, data_frame[ind], line_color=colors[i],
+                               line_width=lw, name=ind, legend_label=ind)
 
         candChart.legend.location = "top_left"
         candChart.legend.click_policy = "hide"
@@ -118,15 +130,18 @@ def interactive_plot(ticker, price, indicator, data_frame,
 
     elif indicator_where == 'below_price':
 
-        indicatorChart = figure(title="Indicator Chart", x_axis_type="datetime",
+        indicatorChart = figure(title=None, x_axis_type="datetime",
                                 x_range=candChart.x_range, tools=tools,
                                 toolbar_location="right", toolbar_sticky=False,
                                 width=fig_width, height=300)
 
         for i, ind in enumerate(indicator):
-
-            indicatorChart.line(x=data_frame.index, y=data_frame[ind], #line_color="purple",
-                                line_width=1.5, name=ind, legend_label=ind)
+                indicatorChart.extra_y_ranges = {ind: Range1d()}
+                candChart.add_layout(LinearAxis(y_range_name=ind, axis_label=ind,
+                                                major_label_text_color=colors[i],
+                                                axis_label_text_color=colors[i]), 'right')
+                indicatorChart.line(x=data_frame.index, y=data_frame[ind], line_color=colors[i],
+                                    line_width=lw, name=ind, legend_label=ind)
 
         indicatorChart.xaxis.axis_label="Date"
         indicatorChart.xaxis.axis_label_text_font_size = fs
