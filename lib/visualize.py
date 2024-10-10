@@ -99,9 +99,11 @@ def interactive_plot(ticker, price, indicator, data_frame, volume_chart,
         volChart.vbar(data_frame.index[inc], width=fig_width, top=data_frame.Volume[inc], fill_color="green", line_color="green", alpha=0.8)
         volChart.vbar(data_frame.index[dec], width=fig_width, top=data_frame.Volume[dec], fill_color="red", line_color="red", alpha=0.8)
         volChart.yaxis.axis_label = "Volume"
+        volChart.yaxis.axis_label_text_font_size = fs
+        volChart.yaxis.axis_label_text_font_style = 'normal'
 
     #============================== INDICATOR CHART ==============================#
-    within_price_scale = ['SMA', 'EMA', 'SAR']
+    within_price_scale = ['SMA', 'EMA', 'SAR', 'BB']
     colors = ['blue', 'orange', 'cyan', 'green', 'black', 'red', 'pink', 'brown']
 
     n = len([x for x in indicator if x in within_price_scale])
@@ -113,8 +115,14 @@ def interactive_plot(ticker, price, indicator, data_frame, volume_chart,
     for i, x in enumerate(indicator):
 
         if x in within_price_scale:
-            candChart.line(x=data_frame.index, y=data_frame[x], line_color=colors[i],
-                           line_width=lw, name=x, legend_label=x)
+            if x == 'BB':
+                # Bollinger Bands plot
+                candChart.line(data_frame.index, data_frame['Middle_BB'], legend_label='Middle Band', line_color='black')
+                candChart.line(data_frame.index, data_frame['Upper_BB'], legend_label='Upper Band', line_color='red')
+                candChart.line(data_frame.index, data_frame['Lower_BB'], legend_label='Lower Band', line_color='red', line_dash='dashed')
+            else:
+                candChart.line(x=data_frame.index, y=data_frame[x], line_color=colors[i],
+                               line_width=lw, name=x, legend_label=x)
             candChart.legend.location = "top_left"
             candChart.legend.click_policy = "hide"
 
@@ -123,14 +131,21 @@ def interactive_plot(ticker, price, indicator, data_frame, volume_chart,
                                        x_range=candChart.x_range, tools=tools,
                                        toolbar_location="right", toolbar_sticky=False,
                                        width=fig_width, height=300)
+            if x == 'MACD':
+                indicatorChart[i].line(data_frame.index, data_frame['MACD'], legend_label='MACD', line_color='blue')
+                indicatorChart[i].line(data_frame.index, data_frame['MACD_signal'], legend_label='MACD Signal', line_color='orange')
+                indicatorChart[i].vbar(data_frame.index, top=data_frame['MACD_hist'], width=0.5, color='green', legend_label='MACD Histogram')
 
-            indicatorChart[i].line(x=data_frame.index, y=data_frame[x], line_color=colors[i],
-                                   line_width=lw, name=x, legend_label=x)
+            elif x == 'STOCH':
+                indicatorChart[i].line(data_frame.index, data_frame['STOCH_k'], legend_label='STOCH_k', line_color='purple')
+                indicatorChart[i].line(data_frame.index, data_frame['STOCH_d'], legend_label='STOCH_d', line_color='green')
+
+            else:
+                indicatorChart[i].line(x=data_frame.index, y=data_frame[x], line_color=colors[i],
+                                       line_width=lw, name=x, legend_label=x)
             indicatorChart[i].xaxis.axis_label_text_font_size = fs
             indicatorChart[i].xaxis.axis_label_text_font_style = 'normal'
             indicatorChart[i].yaxis.axis_label = x
-            #indicatorChart[i].yaxis.major_label_text_color = colors[i]
-            #indicatorChart[i].yaxis.axis_label_text_color = colors[i]
             indicatorChart[i].yaxis.axis_label_text_font_size = fs
             indicatorChart[i].yaxis.axis_label_text_font_style = 'normal'
             indicatorChart[i].legend.location = "top_left"
