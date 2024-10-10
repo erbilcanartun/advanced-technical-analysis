@@ -49,7 +49,7 @@ def interactive_plot(ticker, price, indicator, data_frame, volume_chart,
                      inline = True, fig_width = 1200, fig_height = 500):
     fs = '12pt'
     lw = 1.5
-    tools = "pan, wheel_zoom, box_zoom, save, reset"
+    tools = "pan, wheel_zoom, box_zoom, reset, save"
 
     if inline:
         reset_output()
@@ -84,17 +84,11 @@ def interactive_plot(ticker, price, indicator, data_frame, volume_chart,
                    fill_color="red", line_color="red")
 
     # Set the axis labels
-    #candChart.xaxis.axis_label = "Date"
     candChart.xaxis.axis_label_text_font_size = fs
     candChart.xaxis.axis_label_text_font_style = 'normal'
-    #candChart.xaxis.axis_label_text_font = "times"
-    #candChart.xaxis.axis_label_text_color = "black"
-
     candChart.yaxis.axis_label = ticker
     candChart.yaxis.axis_label_text_font_size = fs
     candChart.yaxis.axis_label_text_font_style = 'normal'
-    #candChart.yaxis.axis_label_text_font = "times"
-    #candChart.yaxis.axis_label_text_color = "black"
 
     #=============================== VOLUME CHART ================================#
     if volume_chart:
