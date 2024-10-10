@@ -111,45 +111,43 @@ def interactive_plot(ticker, price, indicator, data_frame, inline = True,
 
     # If all indicators will be on the main chart, don't initiate additional chart
     additional_chart = len(indicator) != n
-    if additional_chart:
-        indicatorChart = figure(title=None, x_axis_type="datetime",
-                                x_range=candChart.x_range, tools=tools,
-                                toolbar_location="right", toolbar_sticky=False,
-                                width=fig_width, height=300)
 
-    first = True
+    indicatorChart = [0 for _ in range(len(indicator))]
     for i, x in enumerate(indicator):
 
         if x in within_price_scale:
             candChart.line(x=data_frame.index, y=data_frame[x], line_color=colors[i],
                            line_width=lw, name=x, legend_label=x)
-            candChart.legend.location = "top_left"
-            candChart.legend.click_policy = "hide"
 
         else:
-            if first == True:
-                indicatorChart.line(x=data_frame.index, y=data_frame[x], line_color=colors[i],
-                                    line_width=lw, name=x, legend_label=x)
-                indicatorChart.xaxis.axis_label="Date"
-                indicatorChart.xaxis.axis_label_text_font_size = fs
-                indicatorChart.xaxis.axis_label_text_font_style = 'normal'
-                indicatorChart.yaxis.axis_label = x
-                indicatorChart.yaxis.axis_label_text_font_size = fs
-                indicatorChart.yaxis.axis_label_text_font_style = 'normal'
-                indicatorChart.legend.location = "top_left"
-                indicatorChart.legend.click_policy = "hide"
+            indicatorChart[i] = figure(title=None, x_axis_type="datetime",
+                                       x_range=candChart.x_range, tools=tools,
+                                       toolbar_location="right", toolbar_sticky=False,
+                                       width=fig_width, height=300)
 
-                first = False
-            else:
-                indicatorChart.extra_y_ranges = {x: Range1d()}
-                indicatorChart.add_layout(LinearAxis(y_range_name=x, axis_label=x,
-                                                     major_label_text_color=colors[i],
-                                                     axis_label_text_color=colors[i]), 'right')
-                indicatorChart.line(x=data_frame.index, y=data_frame[x], line_color=colors[i],
-                                    line_width=lw, name=x, legend_label=x)
+            indicatorChart[i].line(x=data_frame.index, y=data_frame[x], line_color=colors[i],
+                                   line_width=lw, name=x, legend_label=x)
+            indicatorChart[i].xaxis.axis_label_text_font_size = fs
+            indicatorChart[i].xaxis.axis_label_text_font_style = 'normal'
+            indicatorChart[i].yaxis.axis_label = x
+            #indicatorChart[i].yaxis.major_label_text_color = colors[i]
+            #indicatorChart[i].yaxis.axis_label_text_color = colors[i]
+            indicatorChart[i].yaxis.axis_label_text_font_size = fs
+            indicatorChart[i].yaxis.axis_label_text_font_style = 'normal'
+            indicatorChart[i].legend.location = "top_left"
+            indicatorChart[i].legend.click_policy = "hide"
+
+    candChart.legend.location = "top_left"
+    candChart.legend.click_policy = "hide"
 
     if additional_chart:
-        layout = column(candChart, indicatorChart)
+        indicator_chart_filtered = []
+        for chart in indicatorChart:
+            if chart and isinstance(chart, figure):
+                indicator_chart_filtered.append(chart)
+        indicator_chart_filtered[-1].xaxis.axis_label = "Date"
+        layout = column(candChart, *indicator_chart_filtered)
+
     else:
         layout = column(candChart)
 
