@@ -11,12 +11,12 @@ import talib
 from scipy.spatial.distance import pdist
 
 
-def indicator_plot(ticker, price, indicator, data_frame, interactive = True,
-                   inline = True, fig_width = 1200, fig_height = 500):
+def indicator_plot(ticker, price, indicator, data_frame, volume_chart = False,
+                   interactive = True, inline = True, fig_width = 1200, fig_height = 500):
 
     if interactive:
-        return interactive_plot(ticker, price, indicator, data_frame, inline,
-                                fig_width, fig_height)
+        return interactive_plot(ticker, price, indicator, data_frame, volume_chart,
+                                inline, fig_width, fig_height)
     else:
         return static_plot(ticker, price_data_series, indicator_name, indicator_data)
 
@@ -45,10 +45,11 @@ def static_plot(ticker, price, indicator, data_frame):
     plt.show()
     return fig
 
-def interactive_plot(ticker, price, indicator, data_frame, inline = True,
-                     fig_width = 1200, fig_height = 500):
+def interactive_plot(ticker, price, indicator, data_frame, volume_chart,
+                     inline = True, fig_width = 1200, fig_height = 500):
     fs = '12pt'
     lw = 1.5
+    tools = "pan, wheel_zoom, box_zoom, save, reset"
 
     if inline:
         reset_output()
@@ -66,7 +67,6 @@ def interactive_plot(ticker, price, indicator, data_frame, inline = True,
     candle_body_width = (data_frame.index[1] - data_frame.index[0]).total_seconds() * 1000 / 2
 
     # Prepare the candlestick chart
-    tools = "pan, wheel_zoom, reset"
     candChart = figure(title="Candlestick Chart", x_axis_type="datetime", tools=tools,
                        toolbar_location="right", toolbar_sticky=False,
                        width=fig_width, height=fig_height)
@@ -97,11 +97,14 @@ def interactive_plot(ticker, price, indicator, data_frame, inline = True,
     #candChart.yaxis.axis_label_text_color = "black"
 
     #=============================== VOLUME CHART ================================#
-    #volChart = figure(x_axis_type="datetime", width=fig_width, height=200)
-    #volChart.vbar(data_frame.index[inc], width=width, top=data_frame.Volume[inc], fill_color="green", line_color="green", alpha=0.8)
-    #volChart.vbar(data_frame.index[dec], width=width, top=data_frame.Volume[dec], fill_color="red", line_color="red", alpha=0.8)
-    #volChart.xaxis.axis_label="Date"
-    #volChart.yaxis.axis_label="Volume"
+    if volume_chart:
+        volChart = figure(title=None, x_axis_type="datetime",
+                                       x_range=candChart.x_range, tools=tools,
+                                       toolbar_location="right", toolbar_sticky=False,
+                                       width=fig_width, height=200)
+        volChart.vbar(data_frame.index[inc], width=fig_width, top=data_frame.Volume[inc], fill_color="green", line_color="green", alpha=0.8)
+        volChart.vbar(data_frame.index[dec], width=fig_width, top=data_frame.Volume[dec], fill_color="red", line_color="red", alpha=0.8)
+        volChart.yaxis.axis_label = "Volume"
 
     #============================== INDICATOR CHART ==============================#
     within_price_scale = ['SMA', 'EMA', 'SAR']
@@ -118,6 +121,8 @@ def interactive_plot(ticker, price, indicator, data_frame, inline = True,
         if x in within_price_scale:
             candChart.line(x=data_frame.index, y=data_frame[x], line_color=colors[i],
                            line_width=lw, name=x, legend_label=x)
+            candChart.legend.location = "top_left"
+            candChart.legend.click_policy = "hide"
 
         else:
             indicatorChart[i] = figure(title=None, x_axis_type="datetime",
@@ -137,19 +142,25 @@ def interactive_plot(ticker, price, indicator, data_frame, inline = True,
             indicatorChart[i].legend.location = "top_left"
             indicatorChart[i].legend.click_policy = "hide"
 
-    candChart.legend.location = "top_left"
-    candChart.legend.click_policy = "hide"
-
     if additional_chart:
         indicator_chart_filtered = []
         for chart in indicatorChart:
             if chart and isinstance(chart, figure):
                 indicator_chart_filtered.append(chart)
         indicator_chart_filtered[-1].xaxis.axis_label = "Date"
-        layout = column(candChart, *indicator_chart_filtered)
+
+        if volume_chart:
+            layout = column(candChart, volChart, *indicator_chart_filtered)
+        else:
+            layout = column(candChart, *indicator_chart_filtered)
 
     else:
-        layout = column(candChart)
+        if volume_chart:
+            volChart.xaxis.axis_label = "Date"
+            layout = column(candChart, volChart)
+        else:
+            candChart.xaxis.axis_label = "Date"
+            layout = column(candChart)
 
     show(layout)
     return layout
