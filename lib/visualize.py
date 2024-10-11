@@ -6,6 +6,7 @@ from bokeh.io import output_notebook, reset_output
 import matplotlib.pyplot as plt
 
 import numpy
+import pandas
 import talib
 
 from scipy.spatial.distance import pdist
@@ -117,9 +118,15 @@ def interactive_plot(ticker, price, indicator, data_frame, volume_chart,
         if x in within_price_scale:
             if x == 'BB':
                 # Bollinger Bands plot
-                candChart.line(data_frame.index, data_frame['Middle_BB'], legend_label='Middle Band', line_color='black')
-                candChart.line(data_frame.index, data_frame['Upper_BB'], legend_label='Upper Band', line_color='red')
-                candChart.line(data_frame.index, data_frame['Lower_BB'], legend_label='Lower Band', line_color='red', line_dash='dashed')
+                banddates = numpy.append(data_frame.index, data_frame.index[::-1])
+                bandprice = numpy.append(data_frame['Lower_BB'], data_frame['Upper_BB'][::-1])
+                candChart.patch(pandas.to_datetime(banddates), bandprice, color="#A6CEE3", fill_alpha=0.2, legend_label="BBANDS")
+
+                # Other style
+                #candChart.line(data_frame.index, data_frame['Middle_BB'], legend_label='Middle Band', line_color='black')
+                #candChart.line(data_frame.index, data_frame['Upper_BB'], legend_label='Upper Band', line_color='red')
+                #candChart.line(data_frame.index, data_frame['Lower_BB'], legend_label='Lower Band', line_color='red', line_dash='dashed')
+
             else:
                 candChart.line(x=data_frame.index, y=data_frame[x], line_color=colors[i],
                                line_width=lw, name=x, legend_label=x)
