@@ -4,6 +4,7 @@ from bokeh.layouts import column
 from bokeh.io import output_notebook, reset_output
 
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 
 import numpy
 import pandas
@@ -12,44 +13,87 @@ import talib
 from scipy.spatial.distance import pdist
 
 
-def indicator_plot(ticker, price, indicator, data_frame, volume_chart = False,
+def indicator_plot(ticker, price, indicators, data_frame, volume_chart = False,
                    interactive = True, inline = True, fig_width = 1200, fig_height = 500):
 
     if interactive:
-        return interactive_plot(ticker, price, indicator, data_frame, volume_chart,
+        return interactive_plot(ticker, price, indicators, data_frame, volume_chart,
                                 inline, fig_width, fig_height)
     else:
-        return static_plot(ticker, price_data_series, indicator_name, indicator_data)
+        return static_plot(ticker, price, indicators, data_frame)
 
-def static_plot(ticker, price, indicator, data_frame):
+def static_plot(ticker, price, indicators, data_frame):
 
-    fig, ax = plt.subplots(figsize=(13, 6))
+    lw, fs = 1, 12
+    within_price_scale = ['SMA', 'EMA', 'SAR', 'BB']
+    colors = ['blue', 'orange', 'cyan', 'green', 'black', 'red', 'pink', 'brown']
+
+    # Determine the number of additional indicators
+    n_within_price = len([x for x in indicators if x in within_price_scale])
+    n_additional = len(indicators) - n_within_price
+
+    # Define the heights for each subplot
+    heights = [2] + n_additional * [1]
+    # Create a GridSpec layout
+    j = n_additional + 1
+    gs = gridspec.GridSpec(nrows=j, ncols=1, height_ratios=heights)
+
+    # Create the figure
+    fig = plt.figure(figsize=(11, sum(heights)), dpi=300)
     plt.style.use('classic')
     fig.set_facecolor('white')
-    lw, fs = 1, 14
     plt.rc('lines', linewidth=lw)
     plt.rc('axes', linewidth=lw)
     plt.rcParams['font.family'] = 'Arial'
     plt.rcParams.update({'mathtext.default':'regular'})
 
-    ax.plot(data_frame[price], ls='-',color='blue', lw=.7)
-    ax.tick_params(axis="x", direction="in", labelcolor='black', width=lw, length=4)
-    ax.tick_params(axis="y", direction="in", labelcolor='blue', width=lw, length=4)
-    ax.set_xlabel("Date", fontsize=fs)
-    ax.set_ylabel(ticker, fontsize=fs)
+    # Price line on the first subplot
+    if n_additional:
+        ax = fig.add_subplot(gs[0])
+    else:
+        ax = fig.add_subplot(gs)
+    ax.plot(data_frame[price], ls='-', color='grey', lw=1.5, label=price)
 
-    ax_indicator = ax.twinx()
-    ax_indicator.plot(data_frame[indicator], color='green', lw=lw)
-    ax_indicator.tick_params(axis="both", direction="in", left=True,
-                             labelcolor='green', width=lw, length=4)
-    ax_indicator.set_ylabel(indicator, fontsize=fs)
+    # Plot indicators on the primary y-axis
+    for i, indicator in enumerate(indicators):
+        if indicator in within_price_scale and indicator in data_frame.columns:
+            ax.plot(data_frame[indicator], ls='-', color=colors[i], lw=lw, label=indicator)
+
+    ax.set_ylabel(ticker, fontsize=fs)
+    ax.tick_params(axis="both", direction="in", width=lw, length=4)
+    ax.set_xticklabels([])
+
+    if n_additional:
+        indicators_additional = []
+        for ind in indicators:
+            if ind not in within_price_scale:
+                indicators_additional.append(ind)
+
+        # Plot additional indicators in separate subplots
+        for i, indicator in enumerate(indicators_additional):
+            j = n_within_price + i
+            ax_additional = fig.add_subplot(gs[i + 1])  # Get the corresponding subplot
+            ax_additional.plot(data_frame[indicator], ls='-', color=colors[j], lw=lw, label=indicator)
+            ax_additional.set_ylabel(indicator, fontsize=fs)
+            ax_additional.tick_params(axis="both", direction="in", width=lw, length=4)
+            ax_additional.legend(loc='upper left', fontsize=fs * 0.8)
+
+    # Set the x-axis label for the last subplot
+        ax_additional.set_xlabel("Date", fontsize=fs)
+        #ax_additional.set_xticklabels(data_frame.index[::len(data_frame)//10].strftime('%Y-%m-%d'), rotation=45, ha='right')
+    else:
+        ax.set_xlabel("Date", fontsize=fs)
+        #ax.set_xticklabels(data_frame.index[::len(data_frame)//10].strftime('%Y-%m-%d'), rotation=45, ha='right')
+
+    # Adjust layout
+    plt.subplots_adjust(hspace=0)
     plt.show()
     return fig
 
-def interactive_plot(ticker, price, indicator, data_frame, volume_chart,
+def interactive_plot(ticker, price, indicators, data_frame, volume_chart,
                      inline = True, fig_width = 1200, fig_height = 500):
-    fs = '12pt'
     lw = 1.5
+    fs = '12pt'
     tools = "pan, wheel_zoom, box_zoom, reset, save"
 
     if inline:
@@ -107,13 +151,13 @@ def interactive_plot(ticker, price, indicator, data_frame, volume_chart,
     within_price_scale = ['SMA', 'EMA', 'SAR', 'BB']
     colors = ['blue', 'orange', 'cyan', 'green', 'black', 'red', 'pink', 'brown']
 
-    n = len([x for x in indicator if x in within_price_scale])
+    n = len([x for x in indicators if x in within_price_scale])
 
     # If all indicators will be on the main chart, don't initiate additional chart
-    additional_chart = len(indicator) != n
+    additional_chart = len(indicators) != n
 
-    indicatorChart = [0 for _ in range(len(indicator))]
-    for i, x in enumerate(indicator):
+    indicatorChart = [0 for _ in range(len(indicators))]
+    for i, x in enumerate(indicators):
 
         if x in within_price_scale:
             if x == 'BB':
