@@ -27,64 +27,61 @@ def static_plot(ticker, price, indicators, data_frame):
     lw, fs = 1, 12
     within_price_scale = ['SMA', 'EMA', 'SAR', 'BB']
     colors = ['blue', 'orange', 'cyan', 'green', 'black', 'red', 'pink', 'brown']
-
+    
     # Determine the number of additional indicators
     n_within_price = len([x for x in indicators if x in within_price_scale])
     n_additional = len(indicators) - n_within_price
-
+    
     # Define the heights for each subplot
-    heights = [2] + n_additional * [1]
+    heights = [4] + n_additional * [2]
     # Create a GridSpec layout
-    j = n_additional + 1
-    gs = gridspec.GridSpec(nrows=j, ncols=1, height_ratios=heights)
-
+    gs = gridspec.GridSpec(nrows = n_additional + 1, ncols = 1, height_ratios = heights)
+    
     # Create the figure
-    fig = plt.figure(figsize=(11, sum(heights)), dpi=300)
+    fig = plt.figure(figsize=(10, sum(heights)), dpi=300)
     plt.style.use('classic')
     fig.set_facecolor('white')
     plt.rc('lines', linewidth=lw)
     plt.rc('axes', linewidth=lw)
     plt.rcParams['font.family'] = 'Arial'
     plt.rcParams.update({'mathtext.default':'regular'})
-
+    
     # Price line on the first subplot
-    if n_additional:
-        ax = fig.add_subplot(gs[0])
-    else:
-        ax = fig.add_subplot(gs)
+    ax = fig.add_subplot(gs[0])
     ax.plot(data_frame[price], ls='-', color='grey', lw=1.5, label=price)
-
+    
     # Plot indicators on the primary y-axis
     for i, indicator in enumerate(indicators):
         if indicator in within_price_scale and indicator in data_frame.columns:
             ax.plot(data_frame[indicator], ls='-', color=colors[i], lw=lw, label=indicator)
-
+    
     ax.set_ylabel(ticker, fontsize=fs)
     ax.tick_params(axis="both", direction="in", width=lw, length=4)
-    ax.set_xticklabels([])
-
+    ax.legend(loc='upper left', fontsize=fs * 0.8)
+    
     if n_additional:
         indicators_additional = []
         for ind in indicators:
             if ind not in within_price_scale:
                 indicators_additional.append(ind)
-
+    
         # Plot additional indicators in separate subplots
         for i, indicator in enumerate(indicators_additional):
             j = n_within_price + i
-            ax_additional = fig.add_subplot(gs[i + 1])  # Get the corresponding subplot
+            ax_additional = fig.add_subplot(gs[i + 1], sharex = ax)
             ax_additional.plot(data_frame[indicator], ls='-', color=colors[j], lw=lw, label=indicator)
             ax_additional.set_ylabel(indicator, fontsize=fs)
             ax_additional.tick_params(axis="both", direction="in", width=lw, length=4)
             ax_additional.legend(loc='upper left', fontsize=fs * 0.8)
-
-    # Set the x-axis label for the last subplot
+    
+        # Set the x-axis label for the last subplot
         ax_additional.set_xlabel("Date", fontsize=fs)
         #ax_additional.set_xticklabels(data_frame.index[::len(data_frame)//10].strftime('%Y-%m-%d'), rotation=45, ha='right')
+        ax.set_xticklabels([])
     else:
         ax.set_xlabel("Date", fontsize=fs)
         #ax.set_xticklabels(data_frame.index[::len(data_frame)//10].strftime('%Y-%m-%d'), rotation=45, ha='right')
-
+    
     # Adjust layout
     plt.subplots_adjust(hspace=0)
     plt.show()
@@ -135,19 +132,21 @@ def interactive_plot(ticker, price, indicators, data_frame, volume_chart,
     candChart.yaxis.axis_label_text_font_size = fs
     candChart.yaxis.axis_label_text_font_style = 'normal'
 
-    #=============================== VOLUME CHART ================================#
+    # VOLUME CHART
     if volume_chart:
         volChart = figure(title=None, x_axis_type="datetime",
                                        x_range=candChart.x_range, tools=tools,
                                        toolbar_location="right", toolbar_sticky=False,
                                        width=fig_width, height=200)
-        volChart.vbar(data_frame.index[inc], width=fig_width, top=data_frame.Volume[inc], fill_color="green", line_color="green", alpha=0.8)
-        volChart.vbar(data_frame.index[dec], width=fig_width, top=data_frame.Volume[dec], fill_color="red", line_color="red", alpha=0.8)
+        volChart.vbar(data_frame.index[inc], width=fig_width, top=data_frame.Volume[inc],
+                      fill_color="green", line_color="green", alpha=0.8)
+        volChart.vbar(data_frame.index[dec], width=fig_width, top=data_frame.Volume[dec],
+                      fill_color="red", line_color="red", alpha=0.8)
         volChart.yaxis.axis_label = "Volume"
         volChart.yaxis.axis_label_text_font_size = fs
         volChart.yaxis.axis_label_text_font_style = 'normal'
 
-    #============================== INDICATOR CHART ==============================#
+    # INDICATOR CHART
     within_price_scale = ['SMA', 'EMA', 'SAR', 'BB']
     colors = ['blue', 'orange', 'cyan', 'green', 'black', 'red', 'pink', 'brown']
 
