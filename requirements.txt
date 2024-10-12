@@ -84,6 +84,9 @@ Pygments==2.18.0
 pyinform==0.2.0
 pyopencl==2024.2.7
 pyparsing==3.1.4
+PyQt5==5.15.11
+PyQt5-Qt5==5.15.15
+PyQt5_sip==12.15.0
 PyRQA==8.1.0
 python-dateutil==2.9.0.post0
 python-json-logger==2.0.7
