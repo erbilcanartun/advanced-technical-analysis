@@ -22,11 +22,17 @@ def indicator_plot(ticker, price, indicators, data_frame, volume_chart = False,
     else:
         return static_plot(ticker, price, indicators, data_frame)
 
-def static_plot(ticker, price, indicators, data_frame):
+def static_plot(ticker, price, indicators, data_frame, inline = True):
 
     lw, fs = 1, 12
     within_price_scale = ['SMA', 'EMA', 'SAR', 'BB']
     colors = ['blue', 'orange', 'cyan', 'green', 'black', 'red', 'pink', 'brown']
+
+    if inline:
+        pass
+    else:
+        import matplotlib
+        matplotlib.use('Qt5Agg')
     
     # Determine the number of additional indicators
     n_within_price = len([x for x in indicators if x in within_price_scale])
@@ -76,11 +82,9 @@ def static_plot(ticker, price, indicators, data_frame):
     
         # Set the x-axis label for the last subplot
         ax_additional.set_xlabel("Date", fontsize=fs)
-        #ax_additional.set_xticklabels(data_frame.index[::len(data_frame)//10].strftime('%Y-%m-%d'), rotation=45, ha='right')
         ax.set_xticklabels([])
     else:
         ax.set_xlabel("Date", fontsize=fs)
-        #ax.set_xticklabels(data_frame.index[::len(data_frame)//10].strftime('%Y-%m-%d'), rotation=45, ha='right')
     
     # Adjust layout
     plt.subplots_adjust(hspace=0)
