@@ -55,4 +55,27 @@ Contributions are welcome! Please open an issue or submit a pull request to sugg
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the GNU Affero General Public License (AGPL) v3 for non-commercial and academic use. For commercial use, a separate license agreement is required.
+
+This project is available under a dual-licensing model:
+
+### Academic and Non-Commercial Use
+
+Licensed under GNU Affero General Public License v3.0 (AGPL-3.0)
+- ✅ Free to use, modify, and distribute for academic and non-commercial purposes
+- ✅ Must maintain open source nature of any modifications
+- ✅ Must provide complete source code to users of any network service
+- ✅ Modifications must be documented and shared
+- ✅ Original copyright and license notices must be retained
+
+### Commercial Use
+
+A separate commercial license is required for commercial applications
+- 💼 Enables use in proprietary software
+- 💼 No requirement to disclose source code
+- 💼 Custom support and development options
+- 💼 Contact [artun@mail.com] for licensing terms
+
+For full license details:
+- See [LICENSE](LICENSE.md) for AGPL-3.0 terms
+- See [COMMERCIAL LICENSE](COMMERCIAL_LICENSE.md) for commercial licensing information
