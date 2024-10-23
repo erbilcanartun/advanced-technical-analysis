@@ -22,7 +22,7 @@ Please contact us with the following information:
 3. Scale of deployment
 4. Support requirements
 
-Contact: [artun@mail.com]
+Contact: <artun@mail.com>
 
 ## Pricing
 

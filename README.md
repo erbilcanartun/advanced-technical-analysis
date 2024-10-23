@@ -74,7 +74,7 @@ A separate commercial license is required for commercial applications
 - 💼 Enables use in proprietary software
 - 💼 No requirement to disclose source code
 - 💼 Custom support and development options
-- 💼 Contact [artun@mail.com] for licensing terms
+- 💼 Contact <artun@mail.com> for licensing terms
 
 For full license details:
 - See [LICENSE](LICENSE.md) for AGPL-3.0 terms

@@ -7,7 +7,7 @@ This project is available under a dual-license:
 
 ## Non-Commercial and Academic Use
 
-Copyright (C) 2024 [Erbil Can Artun]
+Copyright (C) 2024 Erbil Can Artun
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -24,4 +24,4 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ## Commercial Licensing
 
-For commercial use, please contact [artun@mail.com] to obtain a separate commercial license.
+For commercial use, please contact <artun@mail.com> to obtain a separate commercial license.
