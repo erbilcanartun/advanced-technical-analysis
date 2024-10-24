@@ -33,16 +33,16 @@ def static_plot(ticker, price, indicators, data_frame, inline = True):
     else:
         import matplotlib
         matplotlib.use('Qt5Agg')
-    
+
     # Determine the number of additional indicators
     n_within_price = len([x for x in indicators if x in within_price_scale])
     n_additional = len(indicators) - n_within_price
-    
+
     # Define the heights for each subplot
     heights = [4] + n_additional * [2]
     # Create a GridSpec layout
     gs = gridspec.GridSpec(nrows = n_additional + 1, ncols = 1, height_ratios = heights)
-    
+
     # Create the figure
     fig = plt.figure(figsize=(10, sum(heights)), dpi=300)
     plt.style.use('classic')
@@ -51,26 +51,26 @@ def static_plot(ticker, price, indicators, data_frame, inline = True):
     plt.rc('axes', linewidth=lw)
     plt.rcParams['font.family'] = 'Arial'
     plt.rcParams.update({'mathtext.default':'regular'})
-    
+
     # Price line on the first subplot
     ax = fig.add_subplot(gs[0])
     ax.plot(data_frame[price], ls='-', color='grey', lw=1.5, label=price)
-    
+
     # Plot indicators on the primary y-axis
     for i, indicator in enumerate(indicators):
         if indicator in within_price_scale and indicator in data_frame.columns:
             ax.plot(data_frame[indicator], ls='-', color=colors[i], lw=lw, label=indicator)
-    
+
     ax.set_ylabel(ticker, fontsize=fs)
     ax.tick_params(axis="both", direction="in", width=lw, length=4)
     ax.legend(loc='upper left', fontsize=fs * 0.8)
-    
+
     if n_additional:
         indicators_additional = []
         for ind in indicators:
             if ind not in within_price_scale:
                 indicators_additional.append(ind)
-    
+
         # Plot additional indicators in separate subplots
         for i, indicator in enumerate(indicators_additional):
             j = n_within_price + i
@@ -79,13 +79,13 @@ def static_plot(ticker, price, indicators, data_frame, inline = True):
             ax_additional.set_ylabel(indicator, fontsize=fs)
             ax_additional.tick_params(axis="both", direction="in", width=lw, length=4)
             ax_additional.legend(loc='upper left', fontsize=fs * 0.8)
-    
+
         # Set the x-axis label for the last subplot
         ax_additional.set_xlabel("Date", fontsize=fs)
         ax.set_xticklabels([])
     else:
         ax.set_xlabel("Date", fontsize=fs)
-    
+
     # Adjust layout
     plt.subplots_adjust(hspace=0)
     plt.show()
