@@ -3,9 +3,9 @@
 This repository provides a collection of conventional and experimental technical indicators, combining widely-used market tools with advanced scientific calculations. These indicators might offer a fresh perspective on market dynamics, incorporating concepts from complexity science, chaos theory, fractal analysis, and recurrence quantification analysis. The repository includes both static plots (Matplotlib) and interactive visualizations (Bokeh) to allow for in-depth exploration and analysis.
 
 <div align="center">
-  <img 
-    src="./images/sample_chart.png" 
-    alt="Candlestick Chart Example" 
+  <img
+    src="./images/sample_chart.png"
+    alt="Candlestick Chart Example"
     width="800"
     title="Hover text appears here"
     style="border-radius: 10px; margin: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"
@@ -68,8 +68,6 @@ In addition to conventional tools, this repository includes advanced metrics tha
 
 #### Fractal Analysis
 
-- **Multifractal Analysis**: Examines scaling properties across different time scales.
-
 <div align="center">
   <table style="border: none; border-collapse: collapse;">
     <tr>
@@ -84,6 +82,8 @@ In addition to conventional tools, this repository includes advanced metrics tha
     </tr>
   </table>
 </div>
+
+- **Multifractal Analysis**: Examines scaling properties across different time scales.
 
         Components:
         - Multifractal Spectrum: Shows range of scaling behaviors
