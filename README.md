@@ -2,7 +2,15 @@
 
 This repository provides a collection of conventional and experimental technical indicators, combining widely-used market tools with advanced scientific calculations. These indicators might offer a fresh perspective on market dynamics, incorporating concepts from complexity science, chaos theory, fractal analysis, and recurrence quantification analysis. The repository includes both static plots (Matplotlib) and interactive visualizations (Bokeh) to allow for in-depth exploration and analysis.
 
-![Sample Chart](./images/sample_chart.png)
+<div align="center">
+  <img 
+    src="./images/sample_chart.png" 
+    alt="Candlestick Chart Example" 
+    width="800"
+    title="Hover text appears here"
+    style="border-radius: 10px; margin: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"
+  >
+</div>
 
 ## Features
 
@@ -28,18 +36,11 @@ This collection includes widely-used technical indicators to analyze market.
 - **Commodity Channel Index (CCI)**: Measures current price relative to average price. Identifies cyclical turns in price. Used for both trend following and counter-trend strategies.
 
 #### Volume-Based Indicators
-- On-Balance Volume (OBV): Cumulative total of volume with direction based on price movement. Used to confirm price trends. Shows potential divergences between price and volume.
+- **On-Balance Volume (OBV)**: Cumulative total of volume with direction based on price movement. Used to confirm price trends. Shows potential divergences between price and volume.
 
-### Scientific Indicators
+### **<span style="color: #FF5733;">Scientific Indicators</span>**
 
 In addition to conventional tools, this repository includes advanced metrics that apply scientific principles.
-
-- Entropy: Quantifies uncertainty or disorder in price movements, offering insight into market unpredictability.
-- Mutual Information: Measures the dependency between time-series data points to reveal hidden relationships within the price series.
-- Multifractal Analysis: Identifies scaling behaviors in time-series data, uncovering patterns that emerge across different time horizons.
-- Recurrence Quantification Analysis (RQA): Detects the recurrence of states in a system, helping to uncover hidden patterns or chaotic behavior in the market.
-- Complexity Measures: Includes methods such as Lempel-Ziv complexity to gauge the randomness and structural complexity within time-series data.
-- Lyapunov Exponent: A chaos indicator that quantifies the sensitivity of the system to initial conditions, helping to detect chaotic or stable behavior.
 
 #### Information Theory Based
 
@@ -68,6 +69,21 @@ In addition to conventional tools, this repository includes advanced metrics tha
 #### Fractal Analysis
 
 - **Multifractal Analysis**: Examines scaling properties across different time scales.
+
+<div align="center">
+  <table style="border: none; border-collapse: collapse;">
+    <tr>
+      <td style="padding: 20px;">
+        <img src="./images/data_preprocess.png" width="400" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"><br>
+        <em style="color: #666;">Data Before/After Preprocess</em>
+      </td>
+      <td style="padding: 20px;">
+        <img src="./images/multifractal_analysis.png" width="600" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"><br>
+        <em style="color: #666;">Multifractal Analysis</em>
+      </td>
+    </tr>
+  </table>
+</div>
 
         Components:
         - Multifractal Spectrum: Shows range of scaling behaviors
@@ -122,14 +138,14 @@ In addition to conventional tools, this repository includes advanced metrics tha
 
 - **Algorithmic Complexity**
 
-    - Lempel-Ziv Complexity: Measures randomness through data compression.
+    - **Lempel-Ziv Complexity**: Measures randomness through data compression.
 
             Applications:
             - Market efficiency measurement
             - Pattern detection
             - Regime change identification
         <br>
-    - Permutation Entropy: Analyzes ordinal patterns in time series.
+    - **Permutation Entropy**: Analyzes ordinal patterns in time series.
  
             Features:
             - Robust to noise
@@ -154,14 +170,6 @@ In addition to conventional tools, this repository includes advanced metrics tha
         - Market structure analysis
         - Hidden pattern detection
         - Cross-scale relationships
-
-
-Each scientific indicator is implemented with:
-- Multiple parameter options for customization
-- Optimization capabilities for specific market conditions
-- Comprehensive statistical validation methods
-- Integration with conventional technical indicators
-- Advanced visualization options
 
 ### Plotting
 
