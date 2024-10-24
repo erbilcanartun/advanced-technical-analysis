@@ -7,7 +7,7 @@ This repository provides a collection of conventional and experimental technical
     src="./images/sample_chart.png"
     alt="Candlestick Chart Example"
     width="800"
-    title="Hover text appears here"
+    title="Candlestick Chart for BTC-USD pair with indicators."
     style="border-radius: 10px; margin: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"
   >
 </div>
