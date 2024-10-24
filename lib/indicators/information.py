@@ -1,5 +1,6 @@
 import numpy
 import pandas
+from pyinform import mutual_info
 from lib.salib import Information
 
 
