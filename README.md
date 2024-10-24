@@ -2,7 +2,7 @@
 
 This repository provides a collection of conventional and experimental technical indicators, combining widely-used market tools with advanced scientific calculations. These indicators might offer a fresh perspective on market dynamics, incorporating concepts from complexity science, chaos theory, fractal analysis, and recurrence quantification analysis. The repository includes both static plots (Matplotlib) and interactive visualizations (Bokeh) to allow for in-depth exploration and analysis.
 
-![Sample Chart](images/sample_chart.png)
+![Sample Chart](./images/sample_chart.png)
 
 ## Features
 
