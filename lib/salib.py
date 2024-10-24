@@ -115,8 +115,8 @@ class Entropy:
 
 class Information:
 
-    def mutual():
-        return mutual_info()
+    def mutual(unlagged, lagged, local):
+        return mutual_info(unlagged, lagged, local)
 
 
 class Complexity:
